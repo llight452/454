@@ -1,1409 +1,407 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jamie Turner at MLI, Inc.</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --warning: #ffc107;
-            --success: #4caf50;
-            --danger: #f44336;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        /* THREE.JS CANVAS STYLING */
-        #three-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Animated Background */
-        .bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            background: radial-gradient(ellipse at top, #1a1a2e 0%, #0a0a0a 50%, #000 100%);
-        }
-
-        .orb-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0;
-            animation: orbFloat 25s infinite ease-in-out;
-        }
-
-        .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--primary), transparent);
-            top: -20%;
-            left: -10%;
-            animation-delay: 0s;
-        }
-
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, var(--accent), transparent);
-            bottom: -15%;
-            right: -10%;
-            animation-delay: 8s;
-        }
-
-        .orb-3 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, var(--secondary), transparent);
-            top: 40%;
-            right: 20%;
-            animation-delay: 16s;
-        }
-
-        @keyframes orbFloat {
-            0%, 100% { 
-                transform: translate(0, 0) scale(1);
-                opacity: 0.15;
-            }
-            25% { 
-                transform: translate(100px, -150px) scale(1.2);
-                opacity: 0.25;
-            }
-            50% { 
-                transform: translate(-50px, 100px) scale(0.9);
-                opacity: 0.2;
-            }
-            75% { 
-                transform: translate(150px, 50px) scale(1.1);
-                opacity: 0.18;
-            }
-        }
-
-        /* Noise Texture */
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.03;
-            z-index: 1000;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-
-        /* Main Container */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Section Base - EXACTLY 100vh */
-        section {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 80px;
-            opacity: 0;
-            transform: translateY(60px);
-            transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* 3D Emoji Icons */
-        .emoji-3d {
-            font-size: 6em;
-            display: inline-block;
-            margin-bottom: 20px;
-            animation: float3d 4s ease-in-out infinite;
-            /*filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))*/
-                    /*drop-shadow(0 0 20px rgba(102, 126, 234, 0.4));*/
-            /*transform-style: preserve-3d;*/
-            text-shadow: 
-                0 0 10px rgba(255, 255, 255, 0.5),
-                0 00px 30px rgba(0, 0, 0, 0.9),
-                0 0px 50px rgba(102, 126, 234, 0.9);
-        }
-
-        @keyframes float3d {
-            0%, 100% { 
-                transform: translateY(0) rotateX(0deg) rotateY(0deg);
-            }
-            25% { 
-                transform: translateY(-20px) rotateX(5deg) rotateY(5deg);
-            }
-            50% { 
-                transform: translateY(0) rotateX(0deg) rotateY(-5deg);
-            }
-            75% { 
-                transform: translateY(-10px) rotateX(-5deg) rotateY(0deg);
-            }
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-size: 7rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fff 0%, var(--primary) 60%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            letter-spacing: -0.04em;
-            line-height: 0.95;
-            animation: titleGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes titleGlow {
-            0%, 100% { 
-                filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.4));
-            }
-            50% { 
-                filter: drop-shadow(0 0 60px rgba(240, 147, 251, 0.6));
-            }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1rem, 2vw, 1.4rem);
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 300;
-            margin-bottom: 40px;
-            letter-spacing: 0.05em;
-        }
-
-        /* Team Card */
-        .team-hero {
-            background: linear-gradient(135deg, 
-                rgba(102, 126, 234, 0.12) 0%, 
-                rgba(118, 75, 162, 0.08) 100%);
-            backdrop-filter: blur(30px);
-            border: 0.5px solid rgba(255, 255, 255, 0.15);
-            border-radius: 32px;
-            padding: 40px 50px;
-            max-width: 900px;
-            box-shadow: 
-                0 20px 60px rgba(102, 126, 234, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .team-name {
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.7));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .team-members {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .member-tag {
-            background: rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 10px 20px;
-            font-size: 0.85em;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .member-tag:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .vision-text {
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.6);
-            font-style: italic;
-        }
-
-        /* Section Headers */
-        .section-header {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 40px;
-            letter-spacing: -0.03em;
-            text-align: center;
-        }
-
-        /* Content Wrapper */
-        .content-wrapper {
-            max-width: 1300px;
-            width: 100%;
-            height: calc(100vh - 120px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin: 30px 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.06) 0%, 
-                rgba(255, 255, 255, 0.02) 100%);
-            backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            border-radius: 24px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
-        }
-
-        .stat-number {
-            font-size: 3em;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            font-size: 0.75em;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 600;
-        }
-
-        /* Glass Cards */
-        .glass-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.02) 100%);
-            backdrop-filter: blur(30px);
-            border: 0.5px solid rgba(255, 255, 255, 0.15);
-            border-radius: 28px;
-            padding: 35px;
-            margin: 20px;
-            transition: all 0.5s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
-        }
-
-        .card-title {
-            font-size: 1.4em;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .card-text {
-            font-size: 0.95em;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.75);
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding: 30px 0 30px 50px;
-            max-width: 800px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, 
-                transparent,
-                var(--primary) 10%,
-                var(--accent) 90%,
-                transparent
-            );
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 30px;
-            padding-left: 35px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -56px;
-            top: 5px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            box-shadow: 
-                0 0 0 4px rgba(102, 126, 234, 0.2),
-                0 0 20px rgba(102, 126, 234, 0.6);
-            animation: pulse 2.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { 
-                box-shadow: 
-                    0 0 0 4px rgba(102, 126, 234, 0.2),
-                    0 0 20px rgba(102, 126, 234, 0.6);
-            }
-            50% { 
-                box-shadow: 
-                    0 0 0 8px rgba(102, 126, 234, 0.1),
-                    0 0 30px rgba(102, 126, 234, 0.8);
-            }
-        }
-
-        .timeline-label {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 1em;
-            margin-bottom: 5px;
-        }
-
-        .timeline-content {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9em;
-            line-height: 1.6;
-        }
-
-        /* Key Insight Box */
-        .key-insight {
-            background: linear-gradient(135deg, 
-                rgba(255, 193, 7, 0.12) 0%, 
-                rgba(255, 152, 0, 0.06) 100%);
-            border-left: 3px solid var(--warning);
-            border-radius: 20px;
-            padding: 30px 35px;
-            margin: 25px 0;
-            box-shadow: 0 10px 40px rgba(255, 193, 7, 0.15);
-        }
-
-        .key-insight-text {
-            font-size: 1em;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
-        }
-
-        /* Grid Layouts */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin: 25px 0;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin: 25px 0;
-        }
-
-        /* Options Cards */
-        .option-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.06) 0%, 
-                rgba(255, 255, 255, 0.02) 100%);
-            backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            border-radius: 24px;
-            padding: 25px 30px;
-            margin: 15px 0;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .option-card:hover {
-            transform: translateX(10px);
-            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.25);
-        }
-
-        .option-number {
-            min-width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 1.5em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .option-content {
-            flex: 1;
-        }
-
-        .option-title {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .option-desc {
-            color: rgba(255, 255, 255, 0.65);
-            font-size: 0.85em;
-            line-height: 1.6;
-        }
-
-        /* Lists */
-        ul {
-            list-style: none;
-            margin: 15px 0;
-        }
-
-        li {
-            position: relative;
-            padding-left: 30px;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            font-size: 0.9em;
-        }
-
-        li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 1.1em;
-        }
-
-        /* Scroll Progress */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            z-index: 1000;
-            box-shadow: 0 0 20px var(--primary);
-            transition: width 0.1s ease;
-        }
-
-        /* Scroll to top button */
-        .scroll-top {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            z-index: 999;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .scroll-top.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-        }
-
-        /* Competency Boxes */
-        .competency-box {
-            background: linear-gradient(135deg, 
-                rgba(76, 175, 80, 0.1) 0%, 
-                rgba(76, 175, 80, 0.03) 100%);
-            border-left: 3px solid var(--success);
-            padding: 25px;
-            border-radius: 16px;
-        }
-
-        .competency-box.weakness {
-            background: linear-gradient(135deg, 
-                rgba(244, 67, 54, 0.1) 0%, 
-                rgba(244, 67, 54, 0.03) 100%);
-            border-left: 3px solid var(--danger);
-        }
-
-        .competency-title {
-            font-size: 1em;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #fff;
-        }
-
-        .mini-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px 25px;
-            margin: 12px 0;
-        }
-
-        .mini-card h4 {
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        .question-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.05) 0%, 
-                rgba(255, 255, 255, 0.01) 100%);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 25px;
-            margin: 15px 0;
-        }
-
-        .question-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .role-section {
-            margin: 20px 0;
-        }
-
-        .role-title {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 12px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            section {
-                padding: 40px 30px;
-            }
-
-            .stats-grid,
-            .grid-2,
-            .grid-3 {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .emoji-3d {
-                font-size: 5em;
-            }
-        }
-
-        /* Smooth reveal animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1s ease, transform 1s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        strong {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        em {
-            color: rgba(255, 255, 255, 0.9);
-            font-style: italic;
-        }
-
-        /* Compact layouts for 100vh sections */
-        .compact-content {
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .compact-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .compact-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        .compact-content::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
-            border-radius: 10px;
-        }
-
-        .compact-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.7);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asset/Liability Study — The Reyes Family</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#667eea;--secondary:#764ba2;--accent:#f093fb;--warning:#ffc107;--success:#4caf50;--danger:#f44336}
+body{font-family:'Inter',sans-serif;background:#000;color:#fff;overflow-x:hidden;scroll-behavior:smooth}
+#three-canvas{position:fixed;top:0;left:0;width:100%;height:100vh;z-index:1;pointer-events:none}
+.bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background:radial-gradient(ellipse at top,#1a1a2e 0%,#0a0a0a 50%,#000 100%)}
+.orb-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0;animation:orbFloat 25s infinite ease-in-out}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,var(--primary),transparent);top:-20%;left:-10%;animation-delay:0s}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,var(--accent),transparent);bottom:-15%;right:-10%;animation-delay:8s}
+.orb-3{width:400px;height:400px;background:radial-gradient(circle,var(--secondary),transparent);top:40%;right:20%;animation-delay:16s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);opacity:.15}25%{transform:translate(100px,-150px) scale(1.2);opacity:.25}50%{transform:translate(-50px,100px) scale(.9);opacity:.2}75%{transform:translate(150px,50px) scale(1.1);opacity:.18}}
+.noise{position:fixed;top:0;left:0;width:100%;height:100%;opacity:.03;z-index:1000;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+.container{position:relative;z-index:10;width:100%;height:100%}
+section{width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 80px;opacity:0;transform:translateY(60px);transition:opacity 1.2s cubic-bezier(.25,.46,.45,.94),transform 1.2s cubic-bezier(.25,.46,.45,.94)}
+section.visible{opacity:1;transform:translateY(0)}
+.emoji-3d{font-size:6em;display:inline-block;margin-bottom:20px;animation:float3d 4s ease-in-out infinite;text-shadow:0 0 10px rgba(255,255,255,.5),0 0 30px rgba(0,0,0,.9),0 0 50px rgba(102,126,234,.9)}
+@keyframes float3d{0%,100%{transform:translateY(0) rotateX(0) rotateY(0)}25%{transform:translateY(-20px) rotateX(5deg) rotateY(5deg)}50%{transform:translateY(0) rotateX(0) rotateY(-5deg)}75%{transform:translateY(-10px) rotateX(-5deg) rotateY(0)}}
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.hero-title{font-size:5.2rem;font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--primary) 60%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;letter-spacing:-.04em;line-height:.95;animation:titleGlow 3s ease-in-out infinite}
+@keyframes titleGlow{0%,100%{filter:drop-shadow(0 0 40px rgba(102,126,234,.4))}50%{filter:drop-shadow(0 0 60px rgba(240,147,251,.6))}}
+.hero-subtitle{font-size:clamp(1rem,2vw,1.4rem);color:rgba(255,255,255,.5);font-weight:300;margin-bottom:40px;letter-spacing:.05em}
+.team-hero{background:linear-gradient(135deg,rgba(102,126,234,.12) 0%,rgba(118,75,162,.08) 100%);backdrop-filter:blur(30px);border:.5px solid rgba(255,255,255,.15);border-radius:32px;padding:40px 50px;max-width:900px;box-shadow:0 20px 60px rgba(102,126,234,.25),inset 0 1px 0 rgba(255,255,255,.1)}
+.team-name{font-size:2em;font-weight:700;margin-bottom:20px;background:linear-gradient(135deg,#fff,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.team-members{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px}
+.member-tag{background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.2);border-radius:16px;padding:12px 24px;font-size:1.05em;font-weight:500;backdrop-filter:blur(10px);transition:all .3s ease}
+.member-tag:hover{background:rgba(255,255,255,.15);transform:translateY(-3px);box-shadow:0 8px 20px rgba(102,126,234,.3)}
+.vision-text{margin-top:20px;font-size:1.15em;color:rgba(255,255,255,.6);font-style:italic}
+.section-header{font-size:clamp(2.6rem,5.2vw,4.4rem);font-weight:800;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:32px;letter-spacing:-.03em;text-align:center}
+.content-wrapper{max-width:1300px;width:100%;height:calc(100vh - 120px);display:flex;flex-direction:column;justify-content:center}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin:26px 0}
+.stat-card{background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 100%);backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.12);border-radius:24px;padding:28px;text-align:center;transition:all .5s cubic-bezier(.25,.46,.45,.94)}
+.stat-card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 20px 50px rgba(102,126,234,.3)}
+.stat-number{font-size:3.2em;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.stat-label{font-size:.9em;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.5);font-weight:600}
+.glass-card{background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.02) 100%);backdrop-filter:blur(30px);border:.5px solid rgba(255,255,255,.15);border-radius:28px;padding:28px 32px;margin:14px 0;transition:all .5s ease}
+.glass-card:hover{transform:translateY(-5px);box-shadow:0 20px 60px rgba(102,126,234,.2)}
+.card-title{font-size:1.7em;font-weight:700;margin-bottom:12px;color:#fff}
+.card-text{font-size:1.15em;line-height:1.6;color:rgba(255,255,255,.75)}
+.timeline{position:relative;padding:20px 0 20px 50px;max-width:900px;margin:0 auto}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--primary) 10%,var(--accent) 90%,transparent);box-shadow:0 0 20px rgba(102,126,234,.5)}
+.timeline-item{position:relative;margin-bottom:24px;padding-left:35px}
+.timeline-item::before{content:'';position:absolute;left:-56px;top:5px;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 0 0 4px rgba(102,126,234,.2),0 0 20px rgba(102,126,234,.6);animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(102,126,234,.2),0 0 20px rgba(102,126,234,.6)}50%{box-shadow:0 0 0 8px rgba(102,126,234,.1),0 0 30px rgba(102,126,234,.8)}}
+.timeline-label{color:var(--accent);font-weight:700;font-size:1.5em;margin-bottom:5px}
+.timeline-content{color:rgba(255,255,255,.85);font-size:1.2em;line-height:1.6}
+.key-insight{background:linear-gradient(135deg,rgba(255,193,7,.12) 0%,rgba(255,152,0,.06) 100%);border-left:3px solid var(--warning);border-radius:20px;padding:24px 30px;margin:20px 0;box-shadow:0 10px 40px rgba(255,193,7,.15)}
+.key-insight-text{font-size:1.45em;font-weight:500;color:rgba(255,255,255,.9);line-height:1.6}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin:20px 0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:20px 0}
+.option-card{background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.02) 100%);backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.12);border-radius:24px;padding:22px 28px;margin:13px 0;transition:all .4s ease;display:flex;align-items:center;gap:20px}
+.option-card:hover{transform:translateX(10px);box-shadow:0 15px 50px rgba(102,126,234,.25)}
+.option-number{min-width:50px;height:50px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:16px;font-weight:800;font-size:1.5em;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(102,126,234,.3)}
+.option-content{flex:1}
+.option-title{font-size:1.5em;font-weight:700;color:#fff;margin-bottom:6px}
+.option-desc{color:rgba(255,255,255,.75);font-size:1.15em;line-height:1.6}
+ul{list-style:none;margin:12px 0}
+li{position:relative;padding-left:32px;margin-bottom:14px;color:rgba(255,255,255,.85);line-height:1.5;font-size:1.2em}
+li::before{content:'→';position:absolute;left:0;color:var(--primary);font-weight:700;font-size:1em}
+.scroll-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1000;box-shadow:0 0 20px var(--primary);transition:width .1s ease}
+.competency-box{background:linear-gradient(135deg,rgba(76,175,80,.1) 0%,rgba(76,175,80,.03) 100%);border-left:3px solid var(--success);padding:24px;border-radius:16px}
+.competency-box.weakness{background:linear-gradient(135deg,rgba(244,67,54,.1) 0%,rgba(244,67,54,.03) 100%);border-left:3px solid var(--danger)}
+.competency-title{font-size:1em;font-weight:700;margin-bottom:12px;color:#fff}
+.mini-card{background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.1);border-radius:16px;padding:18px 22px;margin:10px 0}
+.mini-card h4{margin-bottom:10px;font-size:1.3em}
+.fade-in{opacity:0;transform:translateY(40px);transition:opacity 1s ease,transform 1s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+strong{color:#fff;font-weight:700}
+em{color:rgba(255,255,255,.9);font-style:italic}
+.compact-content{max-height:calc(100vh - 200px);overflow-y:auto;padding-right:10px}
+.compact-content::-webkit-scrollbar{width:6px}
+.compact-content::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:10px}
+.compact-content::-webkit-scrollbar-thumb{background:rgba(102,126,234,.5);border-radius:10px}
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:1.15em}
+.tbl th{text-align:right;font-weight:600;font-size:.75em;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.15)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{text-align:right;padding:12px 14px;border-bottom:.5px solid rgba(255,255,255,.07);color:rgba(255,255,255,.82)}
+.tbl tr:hover td{background:rgba(255,255,255,.04)}
+.num{font-variant-numeric:tabular-nums;font-weight:600;color:#fff}
+.pass{color:var(--success);font-weight:700}
+.fail{color:var(--danger);font-weight:700}
+.eq{font-size:1.6em;font-weight:600;color:#fff;letter-spacing:.02em;text-align:center;padding:14px 0}
+.tag-s{background:rgba(102,126,234,.2);border-radius:10px;padding:3px 10px;font-size:.85em}
+.tag-l{background:rgba(240,147,251,.18);border-radius:10px;padding:3px 10px;font-size:.85em}
+@media(max-width:768px){section{padding:40px 26px}.stats-grid,.grid-2,.grid-3{grid-template-columns:1fr}.hero-title{font-size:2.4rem}.emoji-3d{font-size:4em}.tbl{font-size:.75em}}
+</style>
 </head>
 <body>
-    <!-- Scroll Progress -->
-    <div class="scroll-progress" id="scrollProgress"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="bg-canvas"></div>
+<div class="orb-container"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="noise"></div>
+<div id="three-canvas"></div>
 
-    <!-- Background -->
-    <div class="bg-canvas"></div>
-    <div class="orb-container">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+<div class="container">
+
+<!-- 1 · HERO -->
+<section class="hero visible">
+  <h1 class="hero-title">What Return Do<br>They Actually Need?</h1>
+  <p class="hero-subtitle">Asset/Liability Study · BUS 454</p>
+  <div class="team-hero">
+    <div class="emoji-3d">📐</div>
+    <h2 class="team-name">Team</h2>
+    <div class="team-members">
+      <div class="member-tag">Richard Ashbeck</div>
+      <div class="member-tag">Abhinav Dhanuka</div>
+      <div class="member-tag">Andrei Volodin</div>
     </div>
-    <div class="noise"></div>
+    <p class="vision-text">A required return is a diagnosis, not a plan.</p>
+  </div>
+</section>
 
-    <!-- THREE.JS CANVAS -->
-    <div id="three-canvas"></div>
-
-    <!-- Scroll to Top -->
-    <div class="scroll-top" id="scrollTop" style="display:none">↑</div>
-
-    <!-- Main Content -->
-    <div class="container">
-        <!-- SLIDE 1: Hero Section -->
-        <section class="hero visible">
-
-            <h1 class="hero-title">Jamie Turner at MLI, Inc.</h1>
-            <p class="hero-subtitle">Ethics in Early Career Decisions</p>
-
-            <div class="team-hero">
-                            <div class="emoji-3d">🎯</div>
-                <h2 class="team-name">Team</h2>
-                <div class="team-members">
-                    <div class="member-tag">Graham Hinkel</div>
-                    <div class="member-tag">Fabian Junco</div>
-                    <div class="member-tag">Ariel Nyamien</div>
-                    <div class="member-tag">Andrew Villasenor</div>
-                    <div class="member-tag">Andrei Volodin</div>
-                </div>
-                <p class="vision-text">"Building trust through ethical excellence and collaborative innovation"</p>
-            </div>
-        </section>
-
-        <!-- SLIDE 2: Key Person -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">👤</div> -->
-                <h2 class="section-header">Jamie Turner</h2>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number">32</div>
-                        <div class="stat-label">Years Old</div>
-                    </div>
-                                    <div class="stat-card">
-                        <div class="stat-number">MBA</div>
-                        <div class="stat-label">Top School</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">6</div>
-                        <div class="stat-label">Months at MLI</div>
-                    </div>
-    
-                </div>
-
-                <div class="grid-2">
-                    <div class="mini-card">
-                        <h4 style="color: var(--primary);">Position</h4>
-                        <p class="card-text">VP Marketing & Sales</p>
-                    </div>
-                    <div class="mini-card">
-                        <h4 style="color: var(--primary);">Experience</h4>
-                        <p class="card-text">Wolf River • Lambowland</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 3: Core Problem -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">⚡</div> -->
-                <h2 class="section-header">Core Problem</h2>
-
-                <div class="key-insight">
-                    <p class="key-insight-text">
-                        <strong>Main Conflict:</strong> Promised autonomy became micromanagement in 6 months
-                    </p>
-                </div>
-
-                <div class="grid-2">
-                    <div class="competency-box">
-                        <h3 class="competency-title">      <div class="emoji-3d" style="font-size:1rem; animation:none">✅ </div>  Strengths</h3>
-                        <ul>
-                            <li>Marketing expertise</li>
-                            <li>Strategic thinking</li>
-                            <li>Analytical abilities</li>
-                        </ul>
-                    </div>
-                    <div class="competency-box weakness">
-                        <h3 class="competency-title"><div class="emoji-3d" style="font-size:1rem; animation:none">❌ </ div>   Weaknesses</h3>
-                        <ul>
-                            <li>Coalition building</li>
-                            <li>Reading dynamics</li>
-                            <li>Emotional intelligence</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 4: Timeline -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">📅</div> -->
-                <h2 class="section-header">Conflict Timeline</h2>
-
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-label">March</div>
-                        <div class="timeline-content">Joined, promised autonomy</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-label" >May</div>
-                        <div class="timeline-content">Successful plan, first tensions</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-label">July</div>
-                        <div class="timeline-content">Major conflict over pricing</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-label">August</div>
-                        <div class="timeline-content">Control centralized, bad results</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-label" >September</div>
-                        <div class="timeline-content">Crisis, CEO visit upcoming</div>
-                    </div>
-                </div>
-
-                <div class="grid-3">
-                    <div class="mini-card">
-                        <h4 style="color: #ffc107;">⚠️ Warning</h4>
-                        <p class="card-text">Public criticism</p>
-                    </div>
-                    <div class="mini-card">
-                        <h4 style="color: #ff9800;">🔻 Deterioration</h4>
-                        <p class="card-text">KC closure conflict</p>
-                    </div>
-                    <div class="mini-card">
-                        <h4 style="color: #f44336;">❌ Crisis</h4>
-                        <p class="card-text">Contradictory signals</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 5: Problem Diagnosis -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <div class="emoji-3d" style="text-align: center;">🔍</div>
-                <h2 class="section-header">Problem Diagnosis</h2>
-
-                <div class="grid-3">
-                    <div class="role-section">
-                        <div class="role-title">Turner's Role</div>
-                        <ul>
-                            <li>3 company conflicts</li>
-                            <li>Weak political skills</li>
-                            <li>Arrogant attitude</li>
-                        </ul>
-                    </div>
-                    <div class="role-section">
-                        <div class="role-title">Cardullo's Role</div>
-                        <ul>
-                            <li>Broken promises</li>
-                            <li>Micromanagement</li>
-                            <li>Public reprimands</li>
-                        </ul>
-                    </div>
-                    <div class="role-section">
-                        <div class="role-title">Systemic Issues</div>
-                        <ul>
-                            <li>Dual role vacuum</li>
-                            <li>Internal coalition</li>
-                            <li>Culture transition</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="key-insight">
-                    <p class="key-insight-text">
-                        <strong>Core:</strong> Cardullo's contradictory signals make success impossible
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 6: Hypotheses -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <div class="emoji-3d" style="text-align: center;">🤔</div>
-                <h2 class="section-header">Your Hypotheses</h2>
-
-                <div class="glass-card" style="text-align: center; padding: 50px;">
-                    <h3 class="card-title">What would you do in Turner's place?</h3>
-                    
-                    <div class="grid-2" style="margin-top: 40px;">
-                        <div class="mini-card">
-                            <h4 style="color: var(--primary); font-size: 1.1em;">🎯 Immediate</h4>
-                            <p class="card-text">What to do today?</p>
-                        </div>
-                        <div class="mini-card">
-                            <h4 style="color: var(--accent); font-size: 1.1em;">📈 Long-term</h4>
-                            <p class="card-text">Strategy for 3-6 months?</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 7: Key Diagnosis -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">⚖️</div> -->
-                <h2 class="section-header">Key Diagnosis</h2>
-
-                <div class="glass-card">
-                    <h3 class="card-title">Promise vs Reality</h3>
-                    <p class="card-text">Autonomy promised, micromanagement delivered. August: 24% margin catastrophe.</p>
-                </div>
-
-                <div class="glass-card">
-                    <h3 class="card-title">Structural Impossibility</h3>
-                    <p class="card-text">Cardullo manages $600M division + MLI. Absent but interfering.</p>
-                </div>
-
-                <div class="glass-card">
-                    <h3 class="card-title">Turner's Pattern</h3>
-                    <p class="card-text">3 companies, 3 conflicts. Common: weak political skills.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 8: Relationship Map -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">🤝️</div> -->
-                <h2 class="section-header">Relationship Map</h2>
-
-                <div class="grid-3">
-                    <div class="glass-card">
-                        <h3 class="card-title" style="color: #f44336;">⚔️ Against</h3>
-                        <ul>
-                            <li>Pat Cardullo</li>
-                            <li>Julie Chin</li>
-                            <li>Richard Garcia</li>
-                        </ul>
-                    </div>
-
-                    <div class="glass-card">
-                        <h3 class="card-title" style="color: #4caf50;">🤝 Support</h3>
-                        <ul>
-                            <li>Bill Cook</li>
-                            <li>Juanita Swenson</li>
-                            <li>Tim Kelly</li>
-                        </ul>
-                    </div>
-
-                    <div class="glass-card">
-                        <h3 class="card-title" style="color: #fff;">🔄 Neutral</h3>
-                        <ul>
-                            <li>Ernie Dennis</li>
-                            <li>Arthur Lipsky</li>
-                            <li>Alan Oliver</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 9: Internal Coalition -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">🎯</div> -->
-                <h2 class="section-header">Internal Coalition</h2>
-
-                <div class="glass-card">
-                    <h3 class="card-title">Julie Chin's Role</h3>
-                    <p class="card-text">Reports Turner's decisions to Cardullo before discussion</p>
-                </div>
-
-                <div class="key-insight">
-                    <p class="key-insight-text">
-                        <strong>Example:</strong> Halogen pricing. Chin tells Cardullo first → angry outburst
-                    </p>
-                </div>
-
-                <div class="grid-2">
-                    <div class="mini-card">
-                        <h4 style="color: var(--primary);">Origin</h4>
-                        <p class="card-text">Chin & Garcia from Triple S</p>
-                    </div>
-                    <div class="mini-card">
-                        <h4 style="color: var(--danger);">Result</h4>
-                        <p class="card-text">Turner isolated</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 10: Discussion Questions -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <div class="emoji-3d" style="text-align: center;">💬</div>
-                <h2 class="section-header">Discussion Questions</h2>
-
-                <div class="compact-content">
-                    <div class="question-card">
-                        <div class="question-title">Cardullo's Behavior</div>
-
-                            Is such leadership acceptable?
-                        
-                    </div>
-
-                    <div class="question-card">
-                        <div class="question-title">Relationship Dynamics</div>
-                        
-                            Can Turner join inner circle?
-                    
-                    </div>
-
-                    <div class="question-card">
-                        <div class="question-title">Turner's Actions</div>
-                        What is Turner doing wrong?
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 11: Systemic Questions -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">🌐</div> -->
-                <h2 class="section-header">Systemic Questions</h2>
-
-                <div class="glass-card"style="display:flex;align-items:center;">
-                    <div style="font-size:3rem;margin-right:2vh">🔍</div> How to verify promises during interview stage?
-                </div>
-
-                <div class="glass-card" style="display:flex;align-items:center;">
-                    <div style="font-size:3rem;margin-right:2vh">🤝</div> How to build alliances in a new organization?
-
-                </div>
-
-                <div class="glass-card"style="display:flex;align-items:center;">
-                    <div style="font-size:3rem;margin-right:2vh">⚠️</div> When does organizational culture become toxic?
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 12: Four Options -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">🛣️</div> -->
-                <h2 class="section-header">Four Options</h2>
-
-                <div class>
-                    <div class="option-card">
-                        <span class="option-number">1</span>
-                        <div class="option-content">
-                            <h3 class="option-title">Stay and Fight</h3>
-                            <p class="option-desc"><strong style="color: #4caf50;">✓</strong> Chance of success <strong style="color: #f44336;">✗</strong> Toxic environment</p>
-                        </div>
-                    </div>
-
-                    <div class="option-card">
-                        <span class="option-number">2</span>
-                        <div class="option-content">
-                            <h3 class="option-title">Stay and Wait</h3>
-                            <p class="option-desc"><strong style="color: #4caf50;">✓</strong> Time after Oliver <strong style="color: #f44336;">✗</strong> Passive, burnout</p>
-                        </div>
-                    </div>
-
-                    <div class="option-card">
-                        <span class="option-number">3</span>
-                        <div class="option-content">
-                            <h3 class="option-title">Planned Exit (3-6mo)</h3>
-                            <p class="option-desc"><strong style="color: #4caf50;">✓</strong> Controlled exit <strong style="color: #f44336;">✗</strong> 3rd job change</p>
-                        </div>
-                    </div>
-
-                    <div class="option-card">
-                        <span class="option-number">4</span>
-                        <div class="option-content">
-                            <h3 class="option-title">Immediate Exit</h3>
-                            <p class="option-desc"><strong style="color: #4caf50;">✓</strong> End toxicity <strong style="color: #f44336;">✗</strong> Resume damage</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 13: Recommended Actions -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <!-- <div class="emoji-3d" style="text-align: center;">✅</div> -->
-                <h2 class="section-header">Recommended Actions</h2>
-
-                <div class>
-                    <div class="glass-card">
-                        <h3 class="card-title">Talk with Cardullo</h3>
-                            Define clear expectations +
-                            Request weekly calls +
-                            Set authority boundaries
-                    </div>
-
-                    <div class="glass-card">
-                        <h3 class="card-title">Oliver's Visit Prep</h3>
-                        <div class="grid-2">
-                            <div class="mini-card">
-                                <h4 style="color: #4caf50;">✓ Wins</h4>
-                                <p class="card-text">KC closure, hires</p>
-                            </div>
-                            <div class="mini-card">
-                                <h4 style="color: #f44336;">✗ Issues</h4>
-                                <p class="card-text">Pricing failed</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card">
-                        <h3 class="card-title">Build Relationships</h3>
-                        <p class="card-text">Fresh start with Chin, support team</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 14: Stay Questions -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <div class="emoji-3d" style="text-align: center;">💬</div>
-                <h2 class="section-header">Questions: Stay Scenario</h2>
-
-                <div>
-                    <div class="question-card">
-                        <div class="question-title">Cardullo Conversation</div>
-                        <ul>
-                            <li>What to discuss specifically?</li>
-                            <li>Focus on one or all problems?</li>
-                        </ul>
-                    </div>
-
-                    <div class="question-card">
-                        <div class="question-title">Authority Boundaries</div>
-                        <ul>
-                            <li>What to demand?</li>
-                            <li>How to document agreements?</li>
-                        </ul>
-                    </div>
-
-                    <div class="question-card">
-                        <div class="question-title">Oliver's Visit</div>
-                        <ul>
-                            <li>What to tell CEO?</li>
-                            <li>How explain structural issues?</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 15: Leave Questions -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <div class="emoji-3d" style="text-align: center;">💬</div>
-                <h2 class="section-header">Questions: Leave Scenario</h2>
-
-                <div >
-                    <div class="question-card">
-                        <div class="question-title">Stay or Leave</div>
-                        <ul>
-                            <li>Impact of 3rd job change?</li>
-                        </ul>
-                    </div>
-
-                    <div class="question-card">
-                        <div class="question-title">Financial</div>
-                        <ul>
-                            <li>Can afford to leave now?</li>
-                        </ul>
-                    </div>
-
-                    <div class="question-card">
-                        <div class="question-title">Job Market</div>
-                        <ul>
-                            <li>Explain job changes to employers?</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SLIDE 16: Final Question -->
-        <section class="fade-in">
-            <div class="content-wrapper">
-                <div class="emoji-3d" style="text-align: center;">🎯</div>
-                <h2 class="section-header">Final Question</h2>
-
-                <div class="glass-card" style="padding: 50px; text-align: center;">
-                    <h3 class="card-title" style="font-size: 1.8em; margin-bottom: 40px;">What should Turner do right now?</h3>
-
-                    <div style="margin-top: 50px;">
-                        <h4 style="color: var(--primary); margin-bottom: 25px; font-size: 1.2em;">Key Takeaways</h4>
-                                      <div class="team-members">
-                    <div class="member-tag">Technical skills need political skills</div>
-                    <div class="member-tag">Being right ≠ good relationships</div>
-                    <div class="member-tag">Structure can prevent success</div>
-                    <div class="member-tag">Verify promises early</div>
-                    <div class="member-tag">Build coalitions from day one</div>
-                </div>
-      
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- 2 · THE FAMILY -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">The Reyes Family</h2>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-number">$92,000</div><div class="stat-label">Assets</div></div>
+      <div class="stat-card"><div class="stat-number">$1,600</div><div class="stat-label">Per Month</div></div>
+      <div class="stat-card"><div class="stat-number">240</div><div class="stat-label">Months</div></div>
     </div>
+    <div class="grid-3">
+      <div class="mini-card"><h4 style="color:var(--primary)">Dana, 34</h4><p class="card-text">Nurse. Wants a DNP.</p></div>
+      <div class="mini-card"><h4 style="color:var(--primary)">Marcus, 36</h4><p class="card-text">Engineer. Car is dying.</p></div>
+      <div class="mini-card"><h4 style="color:var(--accent)">Mila, 4</h4><p class="card-text">College in month 168.</p></div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Car, degree, house, four years of college, retirement. <strong>Does it fit?</strong>
+    </p></div>
+  </div>
+</section>
 
-    <!-- THREE.JS LIBRARIES -->
-     <!-- THREE.JS LIBRARIES -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
-            }
-        }
-    </script>
+<!-- 3 · LIABILITIES -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">What They Owe</h2>
+    <div class="glass-card" style="padding:20px 26px">
+      <table class="tbl">
+        <thead><tr><th>Goal</th><th>Month</th><th>Today</th><th>Infl.</th><th>Paid</th></tr></thead>
+        <tbody>
+          <tr><td>Car</td><td>8</td><td>26,000</td><td>2.0%</td><td class="num">$26,349</td></tr>
+          <tr><td>DNP certificate</td><td>26</td><td>14,000</td><td>4.5%</td><td class="num">$15,431</td></tr>
+          <tr><td>House down payment</td><td>60</td><td>95,000</td><td>3.5%</td><td class="num">$113,140</td></tr>
+          <tr><td>College — 4 years</td><td>168–204</td><td>120,000</td><td>4.5%</td><td class="num">$241,036</td></tr>
+          <tr><td>Retirement core</td><td>240</td><td>400,000</td><td>2.5%</td><td class="num">$659,146</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="eq">W(t) = W₀ × (1 + i / 12)<sup>t</sup></div>
+    <div class="key-insight"><p class="key-insight-text">
+      One inflation rate for everything <strong>understates college by $20,000.</strong>
+    </p></div>
+  </div>
+</section>
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+<!-- 4 · THE SPLIT -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">What Cannot Wait</h2>
+    <div class="grid-2">
+      <div class="competency-box">
+        <h3 class="competency-title" style="font-size:1.4em">🔒 Short — cash only</h3>
+        <ul><li>Car, month 8</li><li>Certificate, month 26</li></ul>
+      </div>
+      <div class="competency-box weakness" style="border-left-color:var(--accent);background:linear-gradient(135deg,rgba(240,147,251,.1) 0%,rgba(240,147,251,.03) 100%)">
+        <h3 class="competency-title" style="font-size:1.4em">📈 Long — portfolio</h3>
+        <ul><li>House, month 60</li><li>College, 168–204</li><li>Retirement, month 240</li></ul>
+      </div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Put car money in stocks, hit a drawdown in month 8, <strong>sell at a loss.</strong> The date cannot move.
+    </p></div>
+  </div>
+</section>
 
-        const container = document.getElementById('three-canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 0;
-        container.appendChild(renderer.domElement);
+<!-- 5 · SHORT FUND -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">The Short Fund</h2>
+    <div class="eq" style="font-size:1.8em">B = ( B₋₁ + in − out ) × (1 + r)</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-number">4.20%</div><div class="stat-label">T-Bill</div></div>
+      <div class="stat-card"><div class="stat-number">27%</div><div class="stat-label">Tax</div></div>
+      <div class="stat-card"><div class="stat-number">0.2555%</div><div class="stat-label">Monthly, Net</div></div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Interest comes <strong>last.</strong> Skip the tax step and every row is overstated.
+    </p></div>
+  </div>
+</section>
 
-        // Освещение
-        const lightLeft = new THREE.PointLight(0x6366FF, 100);
-        lightLeft.position.set(-12, 8, 8);
-        scene.add(lightLeft);
+<!-- 6 · CASH LOCKED -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">Cash To Lock Up</h2>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-number">$14,680</div><div class="stat-label">Minimum</div></div>
+      <div class="stat-card"><div class="stat-number">$16,000</div><div class="stat-label">Funded</div></div>
+      <div class="stat-card"><div class="stat-number">$1,348</div><div class="stat-label">Low Point, Mo. 8</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="mini-card"><h4 style="color:var(--primary)">Month 0</h4><p class="card-text"><span class="num">$76,000</span> goes long.</p></div>
+      <div class="mini-card"><h4 style="color:var(--accent)">Month 31</h4><p class="card-text"><span class="num">$19,085</span> transfers over.</p></div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Minimize, don't pad. <strong>Every cash dollar stops compounding for 20 years.</strong>
+    </p></div>
+  </div>
+</section>
 
-        const lightRight = new THREE.PointLight(0xFF0080, 205);
-        lightRight.position.set(12, -8, 8);
-        scene.add(lightRight);
+<!-- 7 · R* -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">Required Return</h2>
+    <div class="glass-card" style="text-align:center;padding:44px">
+      <div style="font-size:9rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">8.60%</div>
+      <p class="stat-label" style="margin-top:14px;font-size:1.1em">Goal Seek · 240 rows · ends at $659,146</p>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      That is what the formula says. <strong>Can a portfolio deliver it?</strong>
+    </p></div>
+  </div>
+</section>
 
-        const topLight = new THREE.DirectionalLight(0xffffff, 1);
-        topLight.position.set(0, 8, 12);
-        scene.add(topLight);
+<!-- 8 · GROSS VS NET -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">Net vs Gross</h2>
+    <div class="glass-card" style="padding:22px 26px">
+      <table class="tbl">
+        <tbody>
+          <tr><td>Needed in the account</td><td class="num">8.60%</td></tr>
+          <tr><td>Dividend tax</td><td class="num">+0.35%</td></tr>
+          <tr><td>Expense ratio</td><td class="num">+0.05%</td></tr>
+          <tr><td><strong>Market must deliver</strong></td><td class="num" style="color:var(--warning);font-size:1.3em">9.00%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Forecasts run <strong>8–9%.</strong> Version 1 needs the ceiling, with nothing left over.
+    </p></div>
+    <div class="mini-card"><h4 style="color:var(--danger)">The trap</h4><p class="card-text">Goal Seek gives a <em>net</em> number. Compare it to a <em>gross</em> forecast and a failing plan looks fine.</p></div>
+  </div>
+</section>
 
-        // ОДНА ФИГУРА - ТОРУС
-        const geometry = new THREE.TorusGeometry(2, 0.8, 100, 100);
-        const material = new THREE.MeshPhysicalMaterial({
-            color: 0x667eea,
-            roughness: 0.25,
-            metalness: 0.5,
-            sheen: 1.0,
-            sheenColor: 0xffffff,
-            clearcoat: 0.5,
-            transmission: 0,
-            ior: 1.5,
-            thickness: 0.5,
-            opacity: 1.0,
-            transparent: false
-        });
-        
-        const torus = new THREE.Mesh(geometry, material);
-        scene.add(torus);
+<!-- 9 · THE FIX -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">The Fix</h2>
+    <div class="option-card">
+      <span class="option-number">1</span>
+      <div class="option-content"><h3 class="option-title">Change nothing</h3>
+        <p class="option-desc"><strong style="color:var(--danger)">✗</strong> 9.00% gross. Ceiling of every forecast.</p></div>
+    </div>
+    <div class="option-card" style="border-color:rgba(76,175,80,.4);background:linear-gradient(135deg,rgba(76,175,80,.1) 0%,rgba(255,255,255,.02) 100%)">
+      <span class="option-number">2</span>
+      <div class="option-content"><h3 class="option-title">Save $150 more</h3>
+        <p class="option-desc"><strong style="color:var(--success)">✓</strong> R* falls to <strong>7.97%</strong> net, 8.37% gross. <strong>Adopted.</strong></p></div>
+    </div>
+    <div class="option-card">
+      <span class="option-number">3</span>
+      <div class="option-content"><h3 class="option-title">College into a 529</h3>
+        <p class="option-desc"><strong style="color:var(--success)">✓</strong> Tax-free growth. Worth ~0.3 points.</p></div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      A high R* is not a strategy. <strong>It says the savings rate is short.</strong>
+    </p></div>
+  </div>
+</section>
 
-        camera.position.z = 5;
+<!-- 10 · GLIDE PATH -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">Glide Path</h2>
+    <div class="glass-card" style="padding:18px 26px;margin:6px 0">
+      <table class="tbl">
+        <thead><tr><th>Months</th><th>Rate</th><th>Factor</th><th>Running</th></tr></thead>
+        <tbody>
+          <tr><td>1 – 84</td><td>11.30%</td><td>2.1975</td><td class="num">2.1975</td></tr>
+          <tr><td>85 – 156</td><td>8.80%</td><td>1.6923</td><td class="num">3.7187</td></tr>
+          <tr><td>157 – 204</td><td>6.30%</td><td>1.2857</td><td class="num">4.7813</td></tr>
+          <tr><td>205 – 240</td><td>4.30%</td><td>1.1374</td><td class="num">5.4384</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid-2" style="margin:10px 0">
+      <div class="mini-card"><h4 style="color:var(--success)">Test 1 — factors</h4><p class="card-text">5.4384 vs 4.8975 · <span class="pass">PASS +11.0%</span></p></div>
+      <div class="mini-card"><h4 style="color:var(--success)">Test 2 — real table</h4><p class="card-text">$678,414 vs $659,146 · <span class="pass">PASS +2.92%</span></p></div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Our first path passed Test 1 and <span class="fail">missed Test 2 by 2.1%.</span> Contributions arrive late and live in the <strong>low</strong> segments.
+    </p></div>
+  </div>
+</section>
 
-        // Пост-обработка
-        const composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-        
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.6, 0);
-        composer.addPass(bloomPass);
+<!-- 11 · REBALANCING -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">When We Trade</h2>
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-label">Month 30</div><div class="timeline-content">Short fund closes. $19,085 moves over.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 84</div><div class="timeline-content">11.30% → 8.80%. House is paid.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 156</div><div class="timeline-content">8.80% → 6.30%. Tuition is one year out.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 204</div><div class="timeline-content">6.30% → 4.30%. Retirement core only.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Every 2 years</div><div class="timeline-content">Rebuild the tables.</div></div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      Risk falls as the money grows — and <strong>each rebuild gets smaller.</strong>
+    </p></div>
+  </div>
+</section>
 
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
-            mouseY = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
-        });
+<!-- 12 · VERDICT -->
+<section class="fade-in">
+  <div class="content-wrapper">
+    <h2 class="section-header">Where It Lands</h2>
+    <div class="glass-card" style="padding:40px;text-align:center">
+      <h3 class="card-title" style="font-size:2.2em">It works at $1,750 a month.</h3>
+      <p class="card-text" style="margin-top:14px;font-size:1.4em"><strong>7.97%</strong> net · <strong>8.37%</strong> gross · 3 rebalances</p>
+      <div class="team-members" style="margin-top:30px">
+        <div class="member-tag">Low point $1,348</div>
+        <div class="member-tag">Never below $76,504</div>
+        <div class="member-tag">Cushion $1,044</div>
+        <div class="member-tag">Glide margin +2.92%</div>
+      </div>
+    </div>
+    <div class="key-insight"><p class="key-insight-text">
+      <strong>Open item:</strong> segment 1 asks for 11.30%. Seven years fully in equities, small balance. Stated, not hidden.
+    </p></div>
+  </div>
+</section>
 
-        function animate() {
-            requestAnimationFrame(animate);
-            const time = performance.now() * 0.001;
+<!-- 13 · THANK YOU -->
+<section class="fade-in hero">
+  <div class="emoji-3d">🙏</div>
+  <h1 class="hero-title" style="font-size:10rem">Thank You</h1>
+  <p class="hero-subtitle" style="font-size:1.6rem">Questions?</p>
+</section>
 
-            // Анимация одной фигуры
-            torus.rotation.x += 0.005;
-            torus.rotation.y += 0.005;
-            torus.rotation.z += 0.002;
+</div>
 
-            // Плавное перемещение с помощью мыши
-            torus.position.x += (mouseX * 3 - torus.position.x) * 0.03;
-            torus.position.y += (-mouseY * 3 - torus.position.y) * 0.03;
-
-            // Плавное движение камеры
-            camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
-            camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
-            camera.lookAt(0, 0, 0);
-
-            composer.render();
-        }
-
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
-
-    <script>
-        window.addEventListener('scroll', () => {
-            const winScroll = document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById('scrollProgress').style.width = scrolled + '%';
-
-            const scrollTop = document.getElementById('scrollTop');
-            if (winScroll > 500) {
-                scrollTop.classList.add('visible');
-            } else {
-                scrollTop.classList.remove('visible');
-            }
-        });
-
-        document.getElementById('scrollTop').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    </script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+const container=document.getElementById('three-canvas');
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,0.1,1000);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=0;
+container.appendChild(renderer.domElement);
+const lightLeft=new THREE.PointLight(0x6366FF,100);lightLeft.position.set(-12,8,8);scene.add(lightLeft);
+const lightRight=new THREE.PointLight(0xFF0080,205);lightRight.position.set(12,-8,8);scene.add(lightRight);
+const topLight=new THREE.DirectionalLight(0xffffff,1);topLight.position.set(0,8,12);scene.add(topLight);
+const geometry=new THREE.TorusGeometry(2,0.8,100,100);
+const material=new THREE.MeshPhysicalMaterial({color:0x667eea,roughness:0.25,metalness:0.5,sheen:1.0,sheenColor:0xffffff,clearcoat:0.5,transmission:0,ior:1.5,thickness:0.5,opacity:1.0,transparent:false});
+const torus=new THREE.Mesh(geometry,material);scene.add(torus);
+camera.position.z=5;
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),0.5,0.6,0));
+let mouseX=0,mouseY=0;
+document.addEventListener('mousemove',e=>{mouseX=(e.clientX-window.innerWidth/2)/(window.innerWidth/2);mouseY=(e.clientY-window.innerHeight/2)/(window.innerHeight/2);});
+function animate(){
+  requestAnimationFrame(animate);
+  torus.rotation.x+=0.005;torus.rotation.y+=0.005;torus.rotation.z+=0.002;
+  torus.position.x+=(mouseX*3-torus.position.x)*0.03;
+  torus.position.y+=(-mouseY*3-torus.position.y)*0.03;
+  camera.position.x+=(mouseX*2-camera.position.x)*0.02;
+  camera.position.y+=(-mouseY*2-camera.position.y)*0.02;
+  camera.lookAt(0,0,0);
+  composer.render();
+}
+animate();
+window.addEventListener('resize',()=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  composer.setSize(window.innerWidth,window.innerHeight);
+});
+</script>
+<script>
+window.addEventListener('scroll',()=>{
+  const w=document.documentElement.scrollTop;
+  const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById('scrollProgress').style.width=(w/h*100)+'%';
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:0.1,rootMargin:'0px 0px -100px 0px'});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+</script>
 </body>
 </html>
