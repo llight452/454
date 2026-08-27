@@ -124,7 +124,7 @@ em{color:rgba(255,255,255,.9);font-style:italic}
     <h2 class="section-header">The Reyes Family</h2>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-number">$92,000</div><div class="stat-label">Assets</div></div>
-      <div class="stat-card"><div class="stat-number">$1,600</div><div class="stat-label">Per Month</div></div>
+      <div class="stat-card"><div class="stat-number">$1,600</div><div class="stat-label">Per Month, Today</div></div>
       <div class="stat-card"><div class="stat-number">240</div><div class="stat-label">Months</div></div>
     </div>
     <div class="grid-3">
@@ -178,6 +178,7 @@ em{color:rgba(255,255,255,.9);font-style:italic}
     <div class="key-insight"><p class="key-insight-text">
       Put car money in stocks, hit a drawdown in month 8, <strong>sell at a loss.</strong> The date cannot move.
     </p></div>
+    <div class="mini-card"><h4 style="color:var(--accent)">The house is the borderline case</h4><p class="card-text">Month 60 is exactly five years. It goes Long because <strong>the purchase can be delayed.</strong> If the market is down, they wait.</p></div>
   </div>
 </section>
 
@@ -185,14 +186,14 @@ em{color:rgba(255,255,255,.9);font-style:italic}
 <section class="fade-in">
   <div class="content-wrapper">
     <h2 class="section-header">The Short Fund</h2>
-    <div class="eq" style="font-size:1.8em">B = ( B₋₁ + in − out ) × (1 + r)</div>
+    <div class="eq" style="font-size:1.5em">profit = ( start + in &minus; out ) &times; rate / 12<br>after tax profit = profit &times; ( 1 &minus; tax )</div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-number">4.20%</div><div class="stat-label">T-Bill</div></div>
       <div class="stat-card"><div class="stat-number">27%</div><div class="stat-label">Tax</div></div>
-      <div class="stat-card"><div class="stat-number">0.2555%</div><div class="stat-label">Monthly, Net</div></div>
+      <div class="stat-card"><div class="stat-number">30</div><div class="stat-label">Months</div></div>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      Interest comes <strong>last.</strong> Skip the tax step and every row is overstated.
+      Gains are taxed, so <strong>every row ends with after tax profit.</strong> Same two steps in both tables.
     </p></div>
   </div>
 </section>
@@ -200,78 +201,79 @@ em{color:rgba(255,255,255,.9);font-style:italic}
 <!-- 6 · CASH LOCKED -->
 <section class="fade-in">
   <div class="content-wrapper">
-    <h2 class="section-header">Cash To Lock Up</h2>
+    <h2 class="section-header">Splitting The $92,000</h2>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-number">$14,680</div><div class="stat-label">Minimum</div></div>
-      <div class="stat-card"><div class="stat-number">$16,000</div><div class="stat-label">Funded</div></div>
+      <div class="stat-card"><div class="stat-number">$16,000</div><div class="stat-label">Into Cash</div></div>
       <div class="stat-card"><div class="stat-number">$1,348</div><div class="stat-label">Low Point, Mo. 8</div></div>
+      <div class="stat-card"><div class="stat-number">$19,085</div><div class="stat-label">Short Fund Closes With</div></div>
     </div>
     <div class="grid-2">
-      <div class="mini-card"><h4 style="color:var(--primary)">Month 0</h4><p class="card-text"><span class="num">$76,000</span> goes long.</p></div>
-      <div class="mini-card"><h4 style="color:var(--accent)">Month 31</h4><p class="card-text"><span class="num">$19,085</span> transfers over.</p></div>
+      <div class="mini-card"><h4 style="color:var(--primary)">The other $76,000 waits</h4><p class="card-text">Risk free for 30 months. Grows to <span class="num">$82,046</span>.</p></div>
+      <div class="mini-card"><h4 style="color:var(--accent)">Long fund opens at month 31</h4><p class="card-text"><span class="num">$101,132</span>. That is where the portfolio starts.</p></div>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      Minimize, don't pad. <strong>Every cash dollar stops compounding for 20 years.</strong>
+      The waiting money does <strong>not</strong> earn the portfolio rate. It is parked, so it earns the T-bill rate.
     </p></div>
   </div>
 </section>
 
-<!-- 7 · R* -->
+<!-- 7 · R STAR -->
 <section class="fade-in">
   <div class="content-wrapper">
     <h2 class="section-header">Required Return</h2>
-    <div class="glass-card" style="text-align:center;padding:44px">
-      <div style="font-size:9rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">8.60%</div>
-      <p class="stat-label" style="margin-top:14px;font-size:1.1em">Goal Seek · 240 rows · ends at $659,146</p>
+    <div class="glass-card" style="text-align:center;padding:40px">
+      <div style="font-size:9rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">12.5%</div>
+      <p class="stat-label" style="margin-top:12px;font-size:1.1em">Before tax &middot; at $1,600 a month</p>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      That is what the formula says. <strong>Can a portfolio deliver it?</strong>
+      Long run forecasts for US stocks run <strong>8 to 9 percent.</strong> Twelve and a half does not exist. <strong>Rejected.</strong>
     </p></div>
   </div>
 </section>
 
-<!-- 8 · GROSS VS NET -->
+<!-- 8 · TRIALS -->
 <section class="fade-in">
   <div class="content-wrapper">
-    <h2 class="section-header">Net vs Gross</h2>
+    <h2 class="section-header">Save More, Or Give Up A Goal</h2>
     <div class="glass-card" style="padding:22px 26px">
       <table class="tbl">
+        <thead><tr><th>Saved per month</th><th>Required return</th><th>Verdict</th></tr></thead>
         <tbody>
-          <tr><td>Needed in the account</td><td class="num">8.60%</td></tr>
-          <tr><td>Dividend tax</td><td class="num">+0.35%</td></tr>
-          <tr><td>Expense ratio</td><td class="num">+0.05%</td></tr>
-          <tr><td><strong>Market must deliver</strong></td><td class="num" style="color:var(--warning);font-size:1.3em">9.00%</td></tr>
+          <tr><td>$1,600</td><td class="num">12.54%</td><td class="fail">no</td></tr>
+          <tr><td>$1,750</td><td class="num">11.52%</td><td class="fail">no</td></tr>
+          <tr><td>$1,900</td><td class="num">10.54%</td><td class="fail">no</td></tr>
+          <tr><td>$2,100</td><td class="num">9.29%</td><td>tight</td></tr>
+          <tr><td><strong>$2,300</strong></td><td class="num" style="color:var(--success)">8.10%</td><td class="pass">yes</td></tr>
         </tbody>
       </table>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      Forecasts run <strong>8–9%.</strong> Version 1 needs the ceiling, with nothing left over.
+      $700 more a month. On their income that is <strong>16 percent of gross,</strong> which is a normal savings rate.
     </p></div>
-    <div class="mini-card"><h4 style="color:var(--danger)">The trap</h4><p class="card-text">Goal Seek gives a <em>net</em> number. Compare it to a <em>gross</em> forecast and a failing plan looks fine.</p></div>
+    <div class="mini-card"><h4 style="color:var(--primary)">When it starts</h4><p class="card-text"><strong>Month 31.</strong> Until then the car and the certificate take the budget. The extra is a flat amount, not indexed, which keeps the target conservative.</p></div>
   </div>
 </section>
 
-<!-- 9 · THE FIX -->
+<!-- 9 · PICKING THE RATE -->
 <section class="fade-in">
   <div class="content-wrapper">
-    <h2 class="section-header">The Fix</h2>
-    <div class="option-card">
-      <span class="option-number">1</span>
-      <div class="option-content"><h3 class="option-title">Change nothing</h3>
-        <p class="option-desc"><strong style="color:var(--danger)">✗</strong> 9.00% gross. Ceiling of every forecast.</p></div>
+    <h2 class="section-header">Picking The Target</h2>
+    <div class="glass-card" style="padding:22px 26px">
+      <table class="tbl">
+        <thead><tr><th>Rate tried</th><th>Balance at month 240</th><th>Target $659,146</th></tr></thead>
+        <tbody>
+          <tr><td>8.0%</td><td class="num">$652,817</td><td class="fail">short</td></tr>
+          <tr><td><strong>8.5%</strong></td><td class="num">$685,083</td><td class="pass">works</td></tr>
+          <tr><td>9.0%</td><td class="num">$719,169</td><td>more than needed</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div class="option-card" style="border-color:rgba(76,175,80,.4);background:linear-gradient(135deg,rgba(76,175,80,.1) 0%,rgba(255,255,255,.02) 100%)">
-      <span class="option-number">2</span>
-      <div class="option-content"><h3 class="option-title">Save $150 more</h3>
-        <p class="option-desc"><strong style="color:var(--success)">✓</strong> R* falls to <strong>7.97%</strong> net, 8.37% gross. <strong>Adopted.</strong></p></div>
-    </div>
-    <div class="option-card">
-      <span class="option-number">3</span>
-      <div class="option-content"><h3 class="option-title">College into a 529</h3>
-        <p class="option-desc"><strong style="color:var(--success)">✓</strong> Tax-free growth. Worth ~0.3 points.</p></div>
+    <div class="grid-2">
+      <div class="mini-card"><h4 style="color:var(--primary)">Target return</h4><p class="card-text"><strong>8.5%</strong> before tax</p></div>
+      <div class="mini-card"><h4 style="color:var(--accent)">Plus fund fees</h4><p class="card-text"><strong>8.55%</strong> from the market</p></div>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      A high R* is not a strategy. <strong>It says the savings rate is short.</strong>
+      Inside the forecast range, with <strong>$25,938 left over</strong> at the end.
     </p></div>
   </div>
 </section>
@@ -284,20 +286,21 @@ em{color:rgba(255,255,255,.9);font-style:italic}
       <table class="tbl">
         <thead><tr><th>Months</th><th>Rate</th><th>Factor</th><th>Running</th></tr></thead>
         <tbody>
-          <tr><td>1 – 84</td><td>11.30%</td><td>2.1975</td><td class="num">2.1975</td></tr>
-          <tr><td>85 – 156</td><td>8.80%</td><td>1.6923</td><td class="num">3.7187</td></tr>
-          <tr><td>157 – 204</td><td>6.30%</td><td>1.2857</td><td class="num">4.7813</td></tr>
-          <tr><td>205 – 240</td><td>4.30%</td><td>1.1374</td><td class="num">5.4384</td></tr>
+          <tr><td>31 &ndash; 114</td><td>12.5%</td><td>1.8895</td><td class="num">1.8895</td></tr>
+          <tr><td>115 &ndash; 174</td><td>9.0%</td><td>1.3876</td><td class="num">2.6220</td></tr>
+          <tr><td>175 &ndash; 216</td><td>6.0%</td><td>1.1653</td><td class="num">3.0554</td></tr>
+          <tr><td>217 &ndash; 240</td><td>3.5%</td><td>1.0524</td><td class="num">3.2156</td></tr>
         </tbody>
       </table>
     </div>
     <div class="grid-2" style="margin:10px 0">
-      <div class="mini-card"><h4 style="color:var(--success)">Test 1 — factors</h4><p class="card-text">5.4384 vs 4.8975 · <span class="pass">PASS +11.0%</span></p></div>
-      <div class="mini-card"><h4 style="color:var(--success)">Test 2 — real table</h4><p class="card-text">$678,414 vs $659,146 · <span class="pass">PASS +2.92%</span></p></div>
+      <div class="mini-card"><h4 style="color:var(--success)">Test 1 &mdash; factors</h4><p class="card-text">3.2156 vs 2.9538 &middot; <span class="pass">PASS +8.9%</span></p></div>
+      <div class="mini-card"><h4 style="color:var(--success)">Test 2 &mdash; real table</h4><p class="card-text">$686,737 vs $659,146 &middot; <span class="pass">PASS +4.2%</span></p></div>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      Our first path passed Test 1 and <span class="fail">missed Test 2 by 2.1%.</span> Contributions arrive late and live in the <strong>low</strong> segments.
+      Multiplying factors assumes one lump left alone. We also have contributions and withdrawals, so <strong>we rerun the whole table.</strong>
     </p></div>
+    <div class="mini-card"><h4 style="color:var(--warning)">The month 60 payment sits inside segment 1</h4><p class="card-text">The portfolio is still aggressive when the house is bought. <strong>That only works because the date can move.</strong> A fixed date would need its own conservative sleeve.</p></div>
   </div>
 </section>
 
@@ -306,14 +309,14 @@ em{color:rgba(255,255,255,.9);font-style:italic}
   <div class="content-wrapper">
     <h2 class="section-header">When We Trade</h2>
     <div class="timeline">
-      <div class="timeline-item"><div class="timeline-label">Month 30</div><div class="timeline-content">Short fund closes. $19,085 moves over.</div></div>
-      <div class="timeline-item"><div class="timeline-label">Month 84</div><div class="timeline-content">11.30% → 8.80%. House is paid.</div></div>
-      <div class="timeline-item"><div class="timeline-label">Month 156</div><div class="timeline-content">8.80% → 6.30%. Tuition is one year out.</div></div>
-      <div class="timeline-item"><div class="timeline-label">Month 204</div><div class="timeline-content">6.30% → 4.30%. Retirement core only.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 30</div><div class="timeline-content">Short fund closes. $101,132 starts working.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 114</div><div class="timeline-content">12.5% down to 9.0%. House is paid.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 174</div><div class="timeline-content">9.0% down to 6.0%. Tuition is close.</div></div>
+      <div class="timeline-item"><div class="timeline-label">Month 216</div><div class="timeline-content">6.0% down to 3.5%. Retirement core only.</div></div>
       <div class="timeline-item"><div class="timeline-label">Every 2 years</div><div class="timeline-content">Rebuild the tables.</div></div>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      Risk falls as the money grows — and <strong>each rebuild gets smaller.</strong>
+      Risk falls as the money grows, and <strong>each rebuild gets smaller.</strong>
     </p></div>
   </div>
 </section>
@@ -323,17 +326,18 @@ em{color:rgba(255,255,255,.9);font-style:italic}
   <div class="content-wrapper">
     <h2 class="section-header">Where It Lands</h2>
     <div class="glass-card" style="padding:40px;text-align:center">
-      <h3 class="card-title" style="font-size:2.2em">It works at $1,750 a month.</h3>
-      <p class="card-text" style="margin-top:14px;font-size:1.4em"><strong>7.97%</strong> net · <strong>8.37%</strong> gross · 3 rebalances</p>
+      <h3 class="card-title" style="font-size:2.2em">It works at $2,300 a month.</h3>
+      <p class="card-text" style="margin-top:14px;font-size:1.4em">Target <strong>8.5%</strong> before tax &middot; <strong>8.55%</strong> from the market &middot; 3 rebalances</p>
       <div class="team-members" style="margin-top:30px">
-        <div class="member-tag">Low point $1,348</div>
-        <div class="member-tag">Never below $76,504</div>
-        <div class="member-tag">Cushion $1,044</div>
-        <div class="member-tag">Glide margin +2.92%</div>
+        <div class="member-tag">Cash low point $1,348</div>
+        <div class="member-tag">Portfolio never below $78,219</div>
+        <div class="member-tag">Surplus $25,938</div>
+        <div class="member-tag">Glide margin +4.2%</div>
+        <div class="member-tag">Plus ~$60,000 emergency fund, never counted</div>
       </div>
     </div>
     <div class="key-insight"><p class="key-insight-text">
-      <strong>Open item:</strong> segment 1 asks for 11.30%. Seven years fully in equities, small balance. Stated, not hidden.
+      At $1,600 the plan needed <strong>12.5 percent.</strong> No portfolio delivers that. <strong>Saving fixed it. Hoping would not have.</strong>
     </p></div>
   </div>
 </section>
